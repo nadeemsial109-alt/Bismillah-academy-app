@@ -1,0 +1,9 @@
+{
+  "name": "Bismillah Educational Academy",
+  "short_name": "Bismillah Academy",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#f3f6f8",
+  "theme_color": "#00695c",
+  "description": "Bismillah Educational Academy Jahanian School Management App"
+}
