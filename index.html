@@ -306,7 +306,7 @@ async function save(){
     console.log('Data saved to Supabase');
   }catch(e){
     console.error('Supabase connection error:',e);
-    toast('Cloud save error');
+    toast('Cloud save failed: ' + error.message);
   }
 }
 /* =========================
