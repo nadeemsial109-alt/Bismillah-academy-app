@@ -1,0 +1,1922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#4f46e5">
+<title>Bismillah Educational Academy Fazia State Jahanian</title>
+
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:#f4f7fb;color:#172033}
+button,input,select{font:inherit}
+button{cursor:pointer;border:0}
+.app{display:flex;min-height:100vh}
+.sidebar{width:250px;background:linear-gradient(180deg,#4f46e5,#7c3aed);color:white;padding:18px;position:fixed;left:0;top:0;bottom:0;z-index:5;overflow:auto}
+.brand{font-weight:800;font-size:18px;line-height:1.3;margin:5px 8px 22px}
+.brand small{display:block;font-weight:400;opacity:.8;margin-top:5px}
+.nav button{width:100%;padding:12px 13px;margin:4px 0;border-radius:10px;background:transparent;color:white;text-align:left}
+.nav button:hover,.nav button.active{background:rgba(255,255,255,.18)}
+.main{margin-left:250px;width:calc(100% - 250px);padding:20px}
+.top{display:flex;align-items:center;gap:10px;margin-bottom:18px}
+.menu{display:none;background:white;padding:10px;border-radius:10px}
+.title{font-size:24px;font-weight:800}
+.cardgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px}
+.card{background:white;border-radius:16px;padding:18px;box-shadow:0 5px 20px #1f293710}
+.stat{font-size:28px;font-weight:800;margin-top:8px}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.btn{padding:10px 14px;border-radius:10px;background:#4f46e5;color:white}
+.btn.green{background:#059669}
+.btn.red{background:#dc2626}
+.btn.gray{background:#64748b}
+.btn.orange{background:#ea580c}
+.panel{background:white;border-radius:16px;padding:18px;box-shadow:0 5px 20px #1f293710;margin-bottom:16px}
+.formgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px}
+.field label{font-size:12px;font-weight:700;display:block;margin-bottom:5px}
+.field input,.field select{width:100%;padding:10px;border:1px solid #d7dce5;border-radius:9px}
+table{width:100%;border-collapse:collapse;background:white}
+th,td{padding:10px;border-bottom:1px solid #e9edf3;text-align:left;font-size:13px}
+th{background:#f7f8fc}
+.tablewrap{overflow:auto}
+.classgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(135px,1fr));gap:12px}
+.classcard{background:white;padding:18px;border-radius:16px;box-shadow:0 5px 20px #1f293710;text-align:center}
+.classicon{font-size:30px}
+.classcard button{margin-top:8px;background:#eef2ff;color:#4338ca;padding:8px 12px;border-radius:8px}
+.hidden{display:none!important}
+.muted{color:#64748b;font-size:13px}
+.danger{color:#dc2626}
+.success{color:#059669}
+.right{margin-left:auto}
+.login{min-height:100vh;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,#4f46e5,#9333ea);padding:20px}
+.loginbox{background:white;width:min(420px,100%);padding:28px;border-radius:20px;box-shadow:0 20px 50px #0003}
+.loginbox h1{margin-top:0}
+.loginbox input{width:100%;padding:12px;margin:7px 0;border:1px solid #ddd;border-radius:10px}
+.loginbox button{width:100%;padding:12px;border-radius:10px;background:#4f46e5;color:white;margin-top:10px}
+.toast{position:fixed;right:18px;bottom:18px;background:#172033;color:white;padding:12px 16px;border-radius:10px;z-index:20}
+
+@media(max-width:800px){
+.sidebar{transform:translateX(-100%);transition:.2s}
+.sidebar.open{transform:translateX(0)}
+.main{margin-left:0;width:100%;padding:14px}
+.menu{display:block}
+.title{font-size:19px}
+}
+
+@media print{
+.sidebar,.top,.actions,.no-print{display:none!important}
+.main{margin:0;width:100%;padding:0}
+.panel{box-shadow:none}
+.print-title{display:block}
+}
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+const SUPABASE_URL="https://rruivenhjzrzweozxnse.supabase.co";
+const SUPABASE_KEY="sb_publishable_3GYHJEfscXamgGUMfXqXGg_iULthHQy";
+
+const supabaseClient=supabase.createClient(
+  SUPABASE_URL,
+  SUPABASE_KEY
+);
+</script>
+
+</head>
+
+<body>
+
+<div id="login" class="login">
+<div class="loginbox">
+<h1>🏫 Bismillah Academy</h1>
+<p class="muted">Fazia State Jahanian — Admin Login</p>
+<input id="loginUser" placeholder="Username" autocomplete="username">
+<input id="loginPass" type="password" placeholder="Password" autocomplete="current-password">
+<button onclick="login()">Login</button>
+<p id="loginMsg" class="danger"></p>
+<p class="muted">Default: admin / 12345</p>
+</div>
+</div>
+
+<div id="app" class="app hidden">
+
+<aside id="sidebar" class="sidebar">
+<div class="brand">
+🏫 Bismillah Educational Academy
+<small>Fazia State Jahanian</small>
+</div>
+
+<div class="nav">
+<button data-page="dashboard" onclick="showPage('dashboard')">🏠 Dashboard</button>
+<button data-page="students" onclick="showPage('students')">👨‍🎓 Students</button>
+<button data-page="classes" onclick="showPage('classes')">📚 Classes</button>
+<button data-page="fees" onclick="showPage('fees')">💰 Fees Record</button>
+<button data-page="tests" onclick="showPage('tests')">📝 Test Marks</button>
+<button data-page="attendance" onclick="showPage('attendance')">📅 Attendance</button>
+<button data-page="reports" onclick="showPage('reports')">📊 Reports</button>
+<button data-page="backup" onclick="showPage('backup')">💾 Backup / Restore</button>
+<button data-page="settings" onclick="showPage('settings')">⚙️ Settings</button>
+<button onclick="logout()">🚪 Logout</button>
+</div>
+</aside>
+
+<main class="main">
+<div class="top">
+<button class="menu" onclick="toggleSide()">☰</button>
+<div class="title" id="pageTitle">Dashboard</div>
+</div>
+<div id="content"></div>
+</main>
+
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script>
+
+const KEY='bea_fazia_data_v1';
+const LOGINKEY='bea_fazia_login';
+
+const classes=[
+'ECE','Nursery','Prep','1st','2nd','3rd','4th','5th',
+'6th','7th','8th','9th','10th','1st Year','2nd Year'
+];
+
+let db={
+students:[],
+fees:[],
+tests:[],
+attendance:[],
+settings:{
+academy:'Bismillah Educational Academy Fazia State Jahanian'
+}
+};
+
+let cloudReady=false;
+let loadingCloud=false;
+
+/* =========================
+   LOCAL DATA
+========================= */
+
+function getLocalData(){
+try{
+let x=localStorage.getItem(KEY);
+if(x){
+let d=JSON.parse(x);
+if(d && d.students && d.fees && d.tests && d.attendance){
+return d;
+}
+}
+}catch(e){
+console.error('Local data error:',e);
+}
+return null;
+}
+
+function saveLocal(){
+try{
+localStorage.setItem(KEY,JSON.stringify(db));
+}catch(e){
+console.error('Local save error:',e);
+}
+}
+
+/* =========================
+   SUPABASE LOAD
+========================= */
+
+async function loadCloudData(){
+
+if(loadingCloud)return;
+
+loadingCloud=true;
+
+try{
+
+const {data,error}=await supabaseClient
+.from('Students')
+.select('data,created_at')
+.order('created_at',{ascending:false})
+.limit(1);
+
+if(error){
+
+console.error('Supabase Load Error:',error);
+
+const local=getLocalData();
+
+if(local){
+db=local;
+}
+
+loadingCloud=false;
+return;
+}
+
+/* Cloud data exists */
+
+if(data && data.length>0 && data[0].data){
+
+db=data[0].data;
+
+saveLocal();
+
+console.log('Cloud data loaded successfully');
+
+cloudReady=true;
+
+}
+
+/* Cloud empty - migrate existing phone data */
+
+else{
+
+const local=getLocalData();
+
+if(local){
+
+db=local;
+
+console.log('Uploading existing local data to Supabase...');
+
+const {error:insertError}=await supabaseClient
+.from('Students')
+.insert({
+data:local
+});
+
+if(insertError){
+
+console.error('Migration Error:',insertError);
+
+}else{
+
+console.log('Existing local data uploaded to Supabase');
+
+cloudReady=true;
+
+}
+
+}else{
+
+cloudReady=true;
+
+}
+
+}
+
+}catch(e){
+
+console.error('Cloud connection error:',e);
+
+const local=getLocalData();
+
+if(local){
+db=local;
+}
+
+}
+
+loadingCloud=false;
+
+}
+
+/* =========================
+   SUPABASE SAVE
+========================= */
+
+async function save(){
+
+saveLocal();
+
+if(!cloudReady){
+
+console.log('Cloud not ready. Local save completed.');
+
+return;
+}
+
+try{
+
+/*
+Remove the previous single cloud record,
+then save the latest complete database.
+*/
+
+const {error:deleteError}=await supabaseClient
+.from('Students')
+.delete()
+.not('created_at','is',null);
+
+if(deleteError){
+
+console.error('Supabase delete error:',deleteError);
+toast('Cloud save failed');
+return;
+
+}
+
+const {error:insertError}=await supabaseClient
+.from('Students')
+.insert({
+data:db
+});
+
+if(insertError){
+
+console.error('Supabase insert error:',insertError);
+toast('Cloud save failed');
+return;
+
+}
+
+console.log('Data saved to Supabase');
+
+}catch(e){
+
+console.error('Supabase save error:',e);
+toast('Cloud save error');
+
+}
+
+}
+
+/* =========================
+   TOAST
+========================= */
+
+function toast(t){
+
+let x=document.getElementById('toast');
+
+x.textContent=t;
+
+x.classList.remove('hidden');
+
+setTimeout(()=>{
+x.classList.add('hidden');
+},2200);
+
+}
+
+/* =========================
+   ESCAPE HTML
+========================= */
+
+function esc(s){
+
+return String(s??'').replace(
+/[&<>"']/g,
+m=>({
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#39;'
+}[m])
+);
+
+}
+
+/* =========================
+   LOGIN
+========================= */
+
+function login(){
+
+let u=document.getElementById('loginUser').value.trim();
+let p=document.getElementById('loginPass').value;
+
+let real=localStorage.getItem('bea_admin_pass')||'12345';
+
+if(u==='admin'&&p===real){
+
+sessionStorage.setItem(LOGINKEY,'1');
+
+openApp();
+
+}else{
+
+document.getElementById('loginMsg').textContent=
+'Wrong username or password.';
+
+}
+
+}
+
+/* =========================
+   OPEN APP
+========================= */
+
+async function openApp(){
+
+document.getElementById('login').classList.add('hidden');
+document.getElementById('app').classList.remove('hidden');
+
+await loadCloudData();
+
+showPage('dashboard');
+
+}
+
+/* =========================
+   LOGOUT
+========================= */
+
+function logout(){
+
+sessionStorage.removeItem(LOGINKEY);
+
+location.reload();
+
+}
+
+/* =========================
+   SIDEBAR
+========================= */
+
+function toggleSide(){
+
+document.getElementById('sidebar').classList.toggle('open');
+
+}
+
+/* =========================
+   PAGE SYSTEM
+========================= */
+
+function showPage(p){
+
+document.querySelectorAll('.nav button')
+.forEach(b=>b.classList.toggle(
+'active',
+b.dataset.page===p
+));
+
+let titles={
+dashboard:'Dashboard',
+students:'Students',
+classes:'Classes',
+fees:'Fees Record',
+tests:'Test Marks',
+attendance:'Attendance',
+reports:'Reports',
+backup:'Backup / Restore',
+settings:'Settings'
+};
+
+document.getElementById('pageTitle').textContent=
+titles[p]||p;
+
+({
+dashboard:dashboard,
+students:studentsPage,
+classes:classesPage,
+fees:feesPage,
+tests:testsPage,
+attendance:attendancePage,
+reports:reportsPage,
+backup:backupPage,
+settings:settingsPage
+}[p])();
+
+document.getElementById('sidebar').classList.remove('open');
+
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+function dashboard(){
+
+let paid=db.fees
+.filter(x=>x.status==='Paid')
+.reduce((a,b)=>a+Number(b.amount||0),0);
+
+document.getElementById('content').innerHTML=`
+
+<div class="cardgrid">
+
+<div class="card">
+👨‍🎓
+<div class="muted">Students</div>
+<div class="stat">${db.students.length}</div>
+</div>
+
+<div class="card">
+💰
+<div class="muted">Fee Entries</div>
+<div class="stat">${db.fees.length}</div>
+</div>
+
+<div class="card">
+📝
+<div class="muted">Test Records</div>
+<div class="stat">${db.tests.length}</div>
+</div>
+
+<div class="card">
+📅
+<div class="muted">Attendance</div>
+<div class="stat">${db.attendance.length}</div>
+</div>
+
+<div class="card">
+💵
+<div class="muted">Paid Amount</div>
+<div class="stat">${paid}</div>
+</div>
+
+</div>
+
+<div class="panel">
+<h2>Quick Actions</h2>
+
+<div class="actions">
+
+<button class="btn" onclick="showPage('students')">
+Add Student
+</button>
+
+<button class="btn green" onclick="showPage('fees')">
+Add Fee
+</button>
+
+<button class="btn orange" onclick="showPage('tests')">
+Add Test Marks
+</button>
+
+<button class="btn gray" onclick="showPage('attendance')">
+Attendance
+</button>
+
+</div>
+</div>
+
+`;
+
+}
+
+/* =========================
+   CLASS OPTIONS
+========================= */
+
+function classOptions(sel=''){
+
+return classes.map(c=>
+`<option ${c===sel?'selected':''}>${c}</option>`
+).join('');
+
+}
+
+/* =========================
+   STUDENTS
+========================= */
+
+function studentsPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>Add Student</h2>
+
+<div class="formgrid">
+
+<div class="field">
+<label>Name</label>
+<input id="sname">
+</div>
+
+<div class="field">
+<label>Father Name</label>
+<input id="sfather">
+</div>
+
+<div class="field">
+<label>Roll No</label>
+<input id="sroll">
+</div>
+
+<div class="field">
+<label>Class</label>
+<select id="sclass">${classOptions()}</select>
+</div>
+
+<div class="field">
+<label>Mobile No</label>
+<input id="smobile">
+</div>
+
+<div class="field">
+<label>Admission Date</label>
+<input id="sdate" type="date">
+</div>
+
+<div class="field">
+<label>Monthly Fee</label>
+<input id="sfee" type="number">
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn" onclick="addStudent()">
+Save Student
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<div class="actions">
+
+<input
+id="studentSearch"
+placeholder="Search student..."
+oninput="renderStudents()"
+style="padding:10px;border:1px solid #ddd;border-radius:9px">
+
+<select
+id="studentClassFilter"
+onchange="renderStudents()"
+style="padding:10px;border:1px solid #ddd;border-radius:9px">
+
+<option value="">All Classes</option>
+${classOptions()}
+
+</select>
+
+<button class="btn gray" onclick="printStudents()">
+Print/PDF
+</button>
+
+</div>
+
+<div class="tablewrap">
+<div id="studentTable"></div>
+</div>
+
+</div>
+
+`;
+
+renderStudents();
+
+}
+
+/* =========================
+   ADD STUDENT
+========================= */
+
+function addStudent(){
+
+let s={
+id:Date.now(),
+name:sname.value.trim(),
+father:sfather.value.trim(),
+roll:sroll.value.trim(),
+class:sclass.value,
+mobile:smobile.value.trim(),
+date:sdate.value,
+fee:Number(sfee.value||0)
+};
+
+if(!s.name)
+return toast('Student name required');
+
+db.students.push(s);
+
+save();
+
+[
+'sname',
+'sfather',
+'sroll',
+'smobile',
+'sdate',
+'sfee'
+].forEach(id=>{
+document.getElementById(id).value='';
+});
+
+renderStudents();
+
+toast('Student saved');
+
+}
+
+/* =========================
+   STUDENT LIST
+========================= */
+
+function renderStudents(){
+
+let q=(
+document.getElementById('studentSearch')?.value||''
+).toLowerCase();
+
+let cl=
+document.getElementById('studentClassFilter')?.value||'';
+
+let a=db.students.filter(s=>
+
+(!q||
+[s.name,s.father,s.roll]
+.join(' ')
+.toLowerCase()
+.includes(q))
+
+&&
+
+(!cl||s.class===cl)
+
+);
+
+document.getElementById('studentTable').innerHTML=`
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Father</th>
+<th>Roll</th>
+<th>Class</th>
+<th>Mobile</th>
+<th>Fee</th>
+<th></th>
+</tr>
+
+${a.map(s=>`
+
+<tr>
+
+<td>${esc(s.name)}</td>
+<td>${esc(s.father)}</td>
+<td>${esc(s.roll)}</td>
+<td>${s.class}</td>
+<td>${esc(s.mobile)}</td>
+<td>${s.fee}</td>
+
+<td>
+
+<button
+class="btn red"
+onclick="del('students',${s.id},renderStudents)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+`).join('')}
+
+</table>
+
+`;
+
+}
+
+/* =========================
+   CLASSES
+========================= */
+
+function classesPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>Class-wise Students</h2>
+
+<div class="classgrid">
+
+${classes.map((c,i)=>`
+
+<div class="classcard">
+
+<div class="classicon">
+${i<3?'🧒':'📘'}
+</div>
+
+<b>${c}</b>
+
+<div class="muted">
+${db.students.filter(s=>s.class===c).length}
+Students
+</div>
+
+<button onclick="showClass('${c}')">
+Open Class
+</button>
+
+</div>
+
+`).join('')}
+
+</div>
+
+</div>
+
+`;
+
+}
+
+function showClass(c){
+
+showPage('students');
+
+setTimeout(()=>{
+
+document.getElementById('studentClassFilter').value=c;
+
+renderStudents();
+
+},0);
+
+}
+
+/* =========================
+   FEES
+========================= */
+
+function feesPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>Add Fee Record</h2>
+
+<div class="formgrid">
+
+<div class="field">
+<label>Student</label>
+
+<select id="fstudent">
+
+${db.students.map(s=>`
+
+<option value="${s.id}">
+${esc(s.name)} — ${s.class}
+</option>
+
+`).join('')}
+
+</select>
+
+</div>
+
+<div class="field">
+<label>Month</label>
+<input id="fmonth" type="month">
+</div>
+
+<div class="field">
+<label>Amount</label>
+<input id="famount" type="number">
+</div>
+
+<div class="field">
+<label>Status</label>
+
+<select id="fstatus">
+<option>Paid</option>
+<option>Unpaid</option>
+<option>Partial</option>
+</select>
+
+</div>
+
+<div class="field">
+<label>Payment Date</label>
+<input id="fdate" type="date">
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn green" onclick="addFee()">
+Save Fee
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>Fee Report</h2>
+
+<div class="actions">
+
+<select id="feeClass">
+<option value="">All Classes</option>
+${classOptions()}
+</select>
+
+<input id="feeMonth" type="month">
+
+<button class="btn gray" onclick="renderFees()">
+View
+</button>
+
+<button class="btn" onclick="printFees()">
+Print/PDF
+</button>
+
+</div>
+
+<div id="feeTable" class="tablewrap"></div>
+
+</div>
+
+`;
+
+renderFees();
+
+}
+
+function addFee(){
+
+let s=db.students.find(x=>x.id==fstudent.value);
+
+if(!s)
+return toast('Add students first');
+
+db.fees.push({
+id:Date.now(),
+studentId:s.id,
+name:s.name,
+class:s.class,
+month:fmonth.value,
+amount:Number(famount.value||0),
+status:fstatus.value,
+date:fdate.value
+});
+
+save();
+
+renderFees();
+
+toast('Fee saved');
+
+}
+
+function renderFees(){
+
+let cl=
+document.getElementById('feeClass')?.value||'';
+
+let mo=
+document.getElementById('feeMonth')?.value||'';
+
+let a=db.fees.filter(x=>
+(!cl||x.class===cl)&&
+(!mo||x.month===mo)
+);
+
+document.getElementById('feeTable').innerHTML=`
+
+<table>
+
+<tr>
+<th>Student</th>
+<th>Class</th>
+<th>Month</th>
+<th>Amount</th>
+<th>Status</th>
+<th>Date</th>
+<th></th>
+</tr>
+
+${a.map(x=>`
+
+<tr>
+
+<td>${esc(x.name)}</td>
+<td>${x.class}</td>
+<td>${x.month}</td>
+<td>${x.amount}</td>
+<td>${x.status}</td>
+<td>${x.date}</td>
+
+<td>
+<button
+class="btn red"
+onclick="del('fees',${x.id},renderFees)">
+Delete
+</button>
+</td>
+
+</tr>
+
+`).join('')}
+
+</table>
+
+`;
+
+}
+
+/* =========================
+   TESTS
+========================= */
+
+function testsPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>Save Test Marks</h2>
+
+<div class="formgrid">
+
+<div class="field">
+<label>Student</label>
+
+<select id="tstudent">
+
+${db.students.map(s=>`
+
+<option value="${s.id}">
+${esc(s.name)} — ${s.class}
+</option>
+
+`).join('')}
+
+</select>
+
+</div>
+
+<div class="field">
+<label>Subject</label>
+<input id="tsubject">
+</div>
+
+<div class="field">
+<label>Test Name</label>
+<input id="tname">
+</div>
+
+<div class="field">
+<label>Total Marks</label>
+<input id="ttotal" type="number">
+</div>
+
+<div class="field">
+<label>Obtained Marks</label>
+<input id="tobt" type="number">
+</div>
+
+<div class="field">
+<label>Date</label>
+<input id="tdate" type="date">
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn orange" onclick="addTest()">
+Save Marks
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>Test Marks Report</h2>
+
+<div class="actions">
+
+<select id="testClass">
+<option value="">All Classes</option>
+${classOptions()}
+</select>
+
+<input id="testMonth" type="month">
+
+<button class="btn gray" onclick="renderTests()">
+View
+</button>
+
+<button class="btn" onclick="printTests()">
+Print/PDF
+</button>
+
+</div>
+
+<div id="testTable" class="tablewrap"></div>
+
+</div>
+
+`;
+
+renderTests();
+
+}
+
+function addTest(){
+
+let s=db.students.find(x=>x.id==tstudent.value);
+
+if(!s)
+return toast('Add students first');
+
+db.tests.push({
+id:Date.now(),
+studentId:s.id,
+name:s.name,
+class:s.class,
+subject:tsubject.value,
+test:tname.value,
+total:Number(ttotal.value||0),
+obt:Number(tobt.value||0),
+date:tdate.value
+});
+
+save();
+
+renderTests();
+
+toast('Marks saved');
+
+}
+
+function renderTests(){
+
+let cl=
+document.getElementById('testClass')?.value||'';
+
+let mo=
+document.getElementById('testMonth')?.value||'';
+
+let a=db.tests.filter(x=>
+(!cl||x.class===cl)&&
+(!mo||x.date.startsWith(mo))
+);
+
+document.getElementById('testTable').innerHTML=`
+
+<table>
+
+<tr>
+<th>Student</th>
+<th>Class</th>
+<th>Subject</th>
+<th>Test</th>
+<th>Total</th>
+<th>Obtained</th>
+<th>Date</th>
+<th></th>
+</tr>
+
+${a.map(x=>`
+
+<tr>
+
+<td>${esc(x.name)}</td>
+<td>${x.class}</td>
+<td>${esc(x.subject)}</td>
+<td>${esc(x.test)}</td>
+<td>${x.total}</td>
+<td>${x.obt}</td>
+<td>${x.date}</td>
+
+<td>
+
+<button
+class="btn red"
+onclick="del('tests',${x.id},renderTests)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+`).join('')}
+
+</table>
+
+`;
+
+}
+
+/* =========================
+   ATTENDANCE
+========================= */
+
+function attendancePage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>Attendance</h2>
+
+<div class="formgrid">
+
+<div class="field">
+<label>Student</label>
+
+<select id="astudent">
+
+${db.students.map(s=>`
+
+<option value="${s.id}">
+${esc(s.name)} — ${s.class}
+</option>
+
+`).join('')}
+
+</select>
+
+</div>
+
+<div class="field">
+<label>Date</label>
+<input id="adate" type="date">
+</div>
+
+<div class="field">
+<label>Status</label>
+
+<select id="astatus">
+<option>Present</option>
+<option>Absent</option>
+<option>Leave</option>
+</select>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn" onclick="addAttendance()">
+Save Attendance
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>Attendance Report</h2>
+
+<div class="actions">
+
+<select id="attClass">
+<option value="">All Classes</option>
+${classOptions()}
+</select>
+
+<input id="attMonth" type="month">
+
+<button class="btn gray" onclick="renderAttendance()">
+View
+</button>
+
+<button class="btn" onclick="printAttendance()">
+Print/PDF
+</button>
+
+</div>
+
+<div id="attTable" class="tablewrap"></div>
+
+</div>
+
+`;
+
+renderAttendance();
+
+}
+
+function addAttendance(){
+
+let s=db.students.find(x=>x.id==astudent.value);
+
+if(!s)
+return toast('Add students first');
+
+db.attendance.push({
+id:Date.now(),
+studentId:s.id,
+name:s.name,
+class:s.class,
+date:adate.value,
+status:astatus.value
+});
+
+save();
+
+renderAttendance();
+
+toast('Attendance saved');
+
+}
+
+function renderAttendance(){
+
+let cl=
+document.getElementById('attClass')?.value||'';
+
+let mo=
+document.getElementById('attMonth')?.value||'';
+
+let a=db.attendance.filter(x=>
+(!cl||x.class===cl)&&
+(!mo||x.date.startsWith(mo))
+);
+
+document.getElementById('attTable').innerHTML=`
+
+<table>
+
+<tr>
+<th>Student</th>
+<th>Class</th>
+<th>Date</th>
+<th>Status</th>
+<th></th>
+</tr>
+
+${a.map(x=>`
+
+<tr>
+
+<td>${esc(x.name)}</td>
+<td>${x.class}</td>
+<td>${x.date}</td>
+<td>${x.status}</td>
+
+<td>
+
+<button
+class="btn red"
+onclick="del('attendance',${x.id},renderAttendance)">
+Delete
+</button>
+
+</td>
+
+</tr>
+
+`).join('')}
+
+</table>
+
+`;
+
+}
+
+/* =========================
+   REPORTS
+========================= */
+
+function reportsPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>Student-wise Report</h2>
+
+<div class="formgrid">
+
+<div class="field">
+
+<label>Student</label>
+
+<select id="rstudent">
+
+${db.students.map(s=>`
+
+<option value="${s.id}">
+${esc(s.name)} — ${s.class}
+</option>
+
+`).join('')}
+
+</select>
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn" onclick="studentReport()">
+Generate Report
+</button>
+
+<button class="btn gray" onclick="window.print()">
+Print / Save PDF
+</button>
+
+</div>
+
+<div id="reportBox"></div>
+
+</div>
+
+`;
+
+}
+
+function studentReport(){
+
+let s=db.students.find(x=>x.id==rstudent.value);
+
+if(!s)return;
+
+let fees=db.fees.filter(x=>x.studentId===s.id);
+let tests=db.tests.filter(x=>x.studentId===s.id);
+let att=db.attendance.filter(x=>x.studentId===s.id);
+
+document.getElementById('reportBox').innerHTML=`
+
+<div class="panel">
+
+<h2>${esc(s.name)}</h2>
+
+<p>
+Father: ${esc(s.father)}
+|
+Class: ${s.class}
+|
+Roll: ${esc(s.roll)}
+</p>
+
+<h3>Fees</h3>
+
+<div class="tablewrap">
+
+<table>
+
+<tr>
+<th>Month</th>
+<th>Amount</th>
+<th>Status</th>
+</tr>
+
+${fees.map(x=>`
+
+<tr>
+<td>${x.month}</td>
+<td>${x.amount}</td>
+<td>${x.status}</td>
+</tr>
+
+`).join('')}
+
+</table>
+
+</div>
+
+<h3>Tests</h3>
+
+<div class="tablewrap">
+
+<table>
+
+<tr>
+<th>Subject</th>
+<th>Test</th>
+<th>Total</th>
+<th>Obtained</th>
+<th>Date</th>
+</tr>
+
+${tests.map(x=>`
+
+<tr>
+<td>${esc(x.subject)}</td>
+<td>${esc(x.test)}</td>
+<td>${x.total}</td>
+<td>${x.obt}</td>
+<td>${x.date}</td>
+</tr>
+
+`).join('')}
+
+</table>
+
+</div>
+
+<h3>Attendance</h3>
+
+<div class="tablewrap">
+
+<table>
+
+<tr>
+<th>Date</th>
+<th>Status</th>
+</tr>
+
+${att.map(x=>`
+
+<tr>
+<td>${x.date}</td>
+<td>${x.status}</td>
+</tr>
+
+`).join('')}
+
+</table>
+
+</div>
+
+</div>
+
+`;
+
+}
+
+/* =========================
+   BACKUP
+========================= */
+
+function backupPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>💾 Backup & Restore</h2>
+
+<p class="muted">
+Your data is saved locally and synchronized with Supabase cloud.
+Keep a backup regularly as an extra safety copy.
+</p>
+
+<div class="actions">
+
+<button class="btn" onclick="downloadBackup()">
+Download Backup
+</button>
+
+<label class="btn green">
+
+Restore Backup
+
+<input
+type="file"
+accept=".json"
+onchange="restoreBackup(event)"
+hidden>
+
+</label>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h3>Data Summary</h3>
+
+<p>
+Students: ${db.students.length}
+|
+Fees: ${db.fees.length}
+|
+Tests: ${db.tests.length}
+|
+Attendance: ${db.attendance.length}
+</p>
+
+</div>
+
+`;
+
+}
+
+function downloadBackup(){
+
+let blob=new Blob(
+[JSON.stringify(db,null,2)],
+{type:'application/json'}
+);
+
+let a=document.createElement('a');
+
+a.href=URL.createObjectURL(blob);
+
+a.download=
+'Bismillah_Academy_Backup_'+
+new Date().toISOString().slice(0,10)+
+'.json';
+
+a.click();
+
+toast('Backup downloaded');
+
+}
+
+function restoreBackup(e){
+
+let f=e.target.files[0];
+
+if(!f)return;
+
+let r=new FileReader();
+
+r.onload=()=>{
+
+try{
+
+let x=JSON.parse(r.result);
+
+if(
+!x.students||
+!x.fees||
+!x.tests||
+!x.attendance
+)throw Error();
+
+db=x;
+
+save();
+
+toast('Backup restored');
+
+showPage('dashboard');
+
+}catch(_){
+
+toast('Invalid backup file');
+
+}
+
+};
+
+r.readAsText(f);
+
+}
+
+/* =========================
+   SETTINGS
+========================= */
+
+function settingsPage(){
+
+document.getElementById('content').innerHTML=`
+
+<div class="panel">
+
+<h2>⚙️ Settings</h2>
+
+<div class="formgrid">
+
+<div class="field">
+
+<label>Academy Name</label>
+
+<input
+id="academyName"
+value="${esc(db.settings.academy)}">
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn" onclick="saveSettings()">
+Save Settings
+</button>
+
+</div>
+
+</div>
+
+<div class="panel">
+
+<h2>🔑 Change Admin Password</h2>
+
+<div class="formgrid">
+
+<div class="field">
+
+<label>New Password</label>
+
+<input id="newpass" type="password">
+
+</div>
+
+</div>
+
+<div class="actions">
+
+<button class="btn orange" onclick="changePass()">
+Change Password
+</button>
+
+</div>
+
+<p class="muted">
+Admin password is stored locally on this device.
+</p>
+
+</div>
+
+`;
+
+}
+
+function saveSettings(){
+
+db.settings.academy=academyName.value;
+
+save();
+
+toast('Settings saved');
+
+}
+
+function changePass(){
+
+let p=newpass.value;
+
+if(p.length<4)
+return toast('Password must be at least 4 characters');
+
+localStorage.setItem('bea_admin_pass',p);
+
+toast('Password changed');
+
+}
+
+/* =========================
+   DELETE
+========================= */
+
+function del(type,id,cb){
+
+if(confirm('Delete this record?')){
+
+db[type]=db[type].filter(x=>x.id!==id);
+
+save();
+
+cb();
+
+toast('Deleted');
+
+}
+
+}
+
+/* =========================
+   PRINT
+========================= */
+
+function printArea(title,html){
+
+let w=window.open('','_blank');
+
+w.document.write(`
+
+<html>
+
+<head>
+
+<title>${title}</title>
+
+<style>
+
+body{
+font-family:Arial;
+padding:20px
+}
+
+table{
+width:100%;
+border-collapse:collapse
+}
+
+th,td{
+border:1px solid #aaa;
+padding:7px;
+text-align:left
+}
+
+h1,h2{
+text-align:center
+}
+
+</style>
+
+</head>
+
+<body>
+
+<h1>${esc(db.settings.academy)}</h1>
+
+<h2>${title}</h2>
+
+${html}
+
+</body>
+
+</html>
+
+`);
+
+w.document.close();
+
+w.focus();
+
+setTimeout(()=>{
+w.print();
+},300);
+
+}
+
+function printStudents(){
+
+printArea(
+'Student List',
+document.getElementById('studentTable').innerHTML
+);
+
+}
+
+function printFees(){
+
+printArea(
+'Fee Report',
+document.getElementById('feeTable').innerHTML
+);
+
+}
+
+function printTests(){
+
+printArea(
+'Test Marks Report',
+document.getElementById('testTable').innerHTML
+);
+
+}
+
+function printAttendance(){
+
+printArea(
+'Attendance Report',
+document.getElementById('attTable').innerHTML
+);
+
+}
+
+/* =========================
+   START APP
+========================= */
+
+document.addEventListener(
+'DOMContentLoaded',
+()=>{
+
+if(sessionStorage.getItem(LOGINKEY)==='1'){
+openApp();
+}
+
+}
+);
+
+</script>
+
+<script>
+
+if("serviceWorker" in navigator){
+
+window.addEventListener("load",()=>{
+
+navigator.serviceWorker.register("./sw.js")
+.then(()=>console.log("Offline system ready"))
+.catch(error=>console.log("Service Worker Error:",error));
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
