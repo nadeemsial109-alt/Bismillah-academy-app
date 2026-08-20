@@ -287,61 +287,28 @@ loadingCloud=false;
 ========================= */
 
 async function save(){
+  saveLocal();
 
-saveLocal();
+  try{
+    const {error}=await supabaseClient
+      .from('Students')
+      .insert({
+        data: db
+      });
 
-if(!cloudReady){
+    if(error){
+      console.error('Supabase save error:',error);
+      toast('Cloud save failed');
+      return;
+    }
 
-console.log('Cloud not ready. Local save completed.');
-
-return;
+    cloudReady=true;
+    console.log('Data saved to Supabase');
+  }catch(e){
+    console.error('Supabase connection error:',e);
+    toast('Cloud save error');
+  }
 }
-
-try{
-
-/*
-Remove the previous single cloud record,
-then save the latest complete database.
-*/
-
-const {error:deleteError}=await supabaseClient
-.from('Students')
-.delete()
-.not('created_at','is',null);
-
-if(deleteError){
-
-console.error('Supabase delete error:',deleteError);
-toast('Cloud save failed');
-return;
-
-}
-
-const {error:insertError}=await supabaseClient
-.from('Students')
-.insert({
-data:db
-});
-
-if(insertError){
-
-console.error('Supabase insert error:',insertError);
-toast('Cloud save failed');
-return;
-
-}
-
-console.log('Data saved to Supabase');
-
-}catch(e){
-
-console.error('Supabase save error:',e);
-toast('Cloud save error');
-
-}
-
-}
-
 /* =========================
    TOAST
 ========================= */
